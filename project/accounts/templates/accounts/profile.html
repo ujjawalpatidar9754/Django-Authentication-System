@@ -1,0 +1,51 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<div class="card p-4 shadow-sm mb-4">
+    <h3 class="mb-3">User Profile 👤</h3>
+    
+    <!-- User Info Summary -->
+    <div class="mb-3">
+        <p class="mb-1"><strong>Username:</strong> {{ user.username }}</p>
+        <p class="mb-1"><strong>Email:</strong> {{ user.email }}</p>
+        <p class="mb-1"><strong>Bio:</strong> {{ user.profile.bio|default:"No bio added yet." }}</p>
+        <p class="mb-1"><strong>Phone:</strong> {{ user.profile.phone_number|default:"Not provided" }}</p>
+    </div>
+
+    <hr>
+
+    <!-- Profile Edit Form -->
+    <h4 class="mt-2 mb-3">Edit Details ✏️</h4>
+    <form method="POST">
+        {% csrf_token %}
+        
+        <h6 class="text-secondary">Account Info</h6>
+        {{ u_form.as_p }}
+
+        <h6 class="text-secondary mt-3">Profile Info</h6>
+        {{ p_form.as_p }}
+
+        <button type="submit" class="btn btn-success mt-2">Update Profile</button>
+    </form>
+</div>
+
+<!-- Admin View Section -->
+{% if all_users %}
+<div class="card p-4 shadow-sm">
+    <h4 class="text-danger">Admin Dashboard 🛡️</h4>
+    <p class="text-muted">Registered Users List:</p>
+    <ul class="list-group">
+        {% for u in all_users %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ u.username }} ({{ u.email }})
+                {% if u.is_superuser %}
+                    <span class="badge bg-danger">Superuser</span>
+                {% else %}
+                    <span class="badge bg-secondary">User</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endblock %}
